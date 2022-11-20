@@ -2,6 +2,7 @@ package simplelru
 
 import (
 	"errors"
+	"time"
 )
 
 // EvictCallback is used to get a callback when a cache entry is evicted
@@ -51,7 +52,7 @@ func (c *LRU[K, V]) Add(key K, value V) (evicted bool) {
 	}
 
 	// Add new item
-	ent := c.evictList.pushFront(key, value)
+	ent := c.evictList.pushFront(key, value, time.Time{})
 	c.items[key] = ent
 
 	evict := c.evictList.length() > c.size
@@ -143,6 +144,9 @@ func (c *LRU[K, V]) Resize(size int) (evicted int) {
 	c.size = size
 	return diff
 }
+
+// Close does nothing for this type of cache.
+func (c *LRU[K, V]) Close() {}
 
 // removeOldest removes the oldest item from the cache.
 func (c *LRU[K, V]) removeOldest() {
