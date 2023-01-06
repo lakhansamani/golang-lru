@@ -251,7 +251,6 @@ func (c *ExpirableLRU[K, V]) deleteExpired() {
 	for _, key := range c.keys() {
 		if time.Now().After(c.items[key].expiresAt) {
 			c.removeElement(c.items[key])
-			continue
 		}
 	}
 }
